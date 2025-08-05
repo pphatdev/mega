@@ -1,8 +1,19 @@
-const filePath = "C:/Users/front-end.01/Downloads/PDF_05082025_042543.pdf";
 import fs from 'fs';
-import { storage } from "./config.js";
+import { megaConfig } from "./config.js";
 
-const uploadFile = async (directory = "root") => {
+const uploadFile = async ({
+    directory = "root",
+    filePath
+}) => {
+
+    if (!filePath) {
+        console.error('No file path provided');
+        process.exit(1);
+    }
+
+    // Initialize storage
+    const storage = await megaConfig.initialize();
+
     // Get file size
     const fileStats = fs.statSync(filePath);
     const fileSize = fileStats.size;
@@ -40,4 +51,27 @@ const uploadFile = async (directory = "root") => {
     });
 };
 
-uploadFile();
+// C:/Users/front-end.01/Downloads/PDF_05082025_042543.pdf
+let filePath = null;
+let directory = "root";
+
+
+process.argv.slice(2).forEach(arg => {
+    if (arg.startsWith('--directory=') || arg.startsWith('-d=')) {
+        directory = arg.split('=')[1];
+    } else if (arg.startsWith('--file=') || arg.startsWith('-f=')) {
+        filePath = arg.split('=')[1];
+    } else {
+        console.error(`Unknown argument: ${arg}`);
+        process.exit(1);
+    }
+});
+
+
+if (!filePath) {
+    console.error('Usage: node upload.js -f=<file_path> [-d=<directory>]');
+    console.error('Example: node upload.js -f="C:/path/to/file.pdf" -d="test"');
+    process.exit(1);
+}
+
+uploadFile({ directory, filePath });

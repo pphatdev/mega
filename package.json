@@ -1,10 +1,12 @@
 {
-  "name": "test-mega",
+  "name": "mega",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "list": "node list.js"
+    "list": "node ./src/list.js",
+    "download": "node ./src/download.js",
+    "upload": "node ./src/upload.js"
   },
   "author": "",
   "license": "ISC",

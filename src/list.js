@@ -15,6 +15,7 @@ async function listFilesWithLinks(folder, prefix = '') {
 
 if (process.argv.slice(2).length === 0) {
     console.log('Usage: node list.js <root|test>');
+    // await listFilesWithLinks(storage.root);
     process.exit(1);
 }
 
