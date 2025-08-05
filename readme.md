@@ -1,150 +1,135 @@
-# MEGA File Operations
+# MEGA File Manager
 
-A Node.js project for uploading, downloading, listing, and previewing files using the MEGA cloud storage service.
+A Node.js application for managing files on MEGA cloud storage. Upload, download, and list files with simple command-line interface.
 
 ## Features
 
-- **Upload files** to MEGA storage with organized folder structure
+- **Upload files** to MEGA cloud storage
 - **Download files** from MEGA using file tokens
-- **List files** and get shareable links from MEGA storage
-- **Preview PDF files** by downloading and parsing content
-- **Class-based architecture** for better code organization
+- **List files** and get public links from your MEGA storage
+- **Directory management** - organize files in folders
 
-## Prerequisites
+## Setup
 
-- Node.js (version 12 or higher)
-- MEGA account with email and password
-- npm or yarn package manager
+### Prerequisites
 
-## Installation
+- Node.js (version 14 or higher)
+- A MEGA account
+
+### Installation
 
 1. Clone or download this project
 2. Install dependencies:
+   ```bash
+   npm install megajs dotenv
+   ```
+
+3. Create a `.env` file in the project root:
+   ```env
+   NODE_EMAIL=your-mega-email@example.com
+   NODE_PASSWORD=your-mega-password
+   ```
+
+## Usage
+
+### Upload Files
+
+Upload a file to your MEGA storage:
+
 ```bash
-npm install
+# Upload to root directory
+node src/upload.js -f="C:/path/to/your/file.pdf"
+
+# Upload to specific directory
+node src/upload.js -f="C:/path/to/your/file.pdf" -d="test"
 ```
 
-3. Create a `.env` file in the root directory:
-```env
-NODE_EMAIL=your-mega-email@example.com
-NODE_PASSWORD=your-mega-password
+**Parameters:**
+- `-f` or `--file`: Path to the file you want to upload
+- `-d` or `--directory`: Target directory (defaults to "root")
+
+### Download Files
+
+Download a file using its MEGA token:
+
+```bash
+node src/download.js -t="6V9HnAZK#hnnVrrivXt8nPf_dPcgVdOLz-PGTUTKcc2dXEsxYLPk"
+```
+
+**Parameters:**
+- `-t` or `--token`: MEGA file token (the part after `/file/` in MEGA links)
+
+Downloaded files are saved to your system's Downloads folder.
+
+### List Files
+
+List all files in your MEGA storage and get their public links:
+
+```bash
+# List all files in root directory
+node src/list.js root
+
+# List files in "test" directory
+node src/list.js test
 ```
 
 ## Project Structure
 
 ```
 test-mega/
-├── config.js          # MEGA storage configuration
-├── upload.js          # File upload functionality
-├── download.js        # File download functionality (class-based)
-├── list.js            # List files and get links
-├── preview.js         # PDF preview and parsing
-├── package.json       # Project dependencies
-└── .env               # Environment variables (create this)
+├── src/
+│   ├── config.js      # MEGA configuration and authentication
+│   ├── upload.js      # File upload functionality
+│   ├── download.js    # File download functionality
+│   └── list.js        # List files and generate links
+├── .env               # Environment variables (create this)
+└── README.md          # This file
 ```
-
-## Usage
-
-### Upload Files
-
-Upload a file to MEGA storage:
-
-```bash
-node upload.js
-```
-
-- Modify the `filePath` variable in `upload.js` to specify the file to upload
-- Files are uploaded to a "test" folder by default
-- Returns a shareable MEGA link upon completion
-
-### Download Files
-
-Download files using MEGA tokens:
-
-```bash
-node download.js -t=YOUR_MEGA_TOKEN
-# or
-node download.js --token=YOUR_MEGA_TOKEN
-```
-
-Example:
-```bash
-node download.js -t=6V9HnAZK#hnnVrrivXt8nPf_dPcgVdOLz-PGTUTKcc2dXEsxYLPk
-```
-
-- Downloads files to your system's Downloads folder
-- Displays file name and size before downloading
-- Uses class-based `MegaDownloader` for better organization
-
-### List Files
-
-List files and get shareable links:
-
-```bash
-# List all files in root directory
-node list.js root
-
-# List files in "test" folder
-node list.js test
-```
-
-### Preview PDF Files
-
-Download and extract text from PDF files:
-
-```bash
-node preview.js -t=YOUR_MEGA_TOKEN
-```
-
-- Downloads PDF files and extracts readable text
-- Useful for content preview without manual download
 
 ## Configuration
 
-The project uses environment variables for MEGA authentication:
+The application uses environment variables for MEGA credentials:
 
 - `NODE_EMAIL`: Your MEGA account email
 - `NODE_PASSWORD`: Your MEGA account password
 
-Make sure to add your `.env` file to `.gitignore` to keep credentials secure.
+If not set in `.env`, it falls back to hardcoded values in `config.js` (not recommended for production).
 
-## Dependencies
+## Examples
 
-- **megajs**: MEGA cloud storage API client
-- **pdf-parse**: PDF text extraction
-- **dotenv**: Environment variable management
-- **fs, path, os**: Node.js built-in modules
+### Complete Workflow Example
 
-## Scripts
+1. **Upload a file:**
+   ```bash
+   node src/upload.js -f="C:/Users/john/Documents/report.pdf" -d="work"
+   ```
 
-Available npm scripts:
+2. **List files to get the link:**
+   ```bash
+   node src/list.js work
+   ```
 
-```bash
-npm run list    # Run the list command
-```
+3. **Download using token from another machine:**
+   ```bash
+   node src/download.js -t="AbC123XyZ#randomHashKey"
+   ```
 
 ## Error Handling
 
-All operations include comprehensive error handling:
-- File not found errors
-- Authentication failures
+The application includes error handling for:
+- Invalid file paths
 - Network connectivity issues
-- Invalid token errors
+- Authentication failures
+- Missing arguments
 
 ## Security Notes
 
-- Never commit your `.env` file with real credentials
-- Use environment variables for sensitive information
-- Tokens in the code are examples only
+- Keep your `.env` file secure and never commit it to version control
+- MEGA tokens in public links allow anyone to download the file
+- Consider using private sharing for sensitive files
 
-## Contributing
+## Dependencies
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-ISC License - see package.json for
+- `megajs`: MEGA cloud storage API client
+- `dotenv`: Environment variable management
+- Built-in Node.js modules: `fs`, `path`, `os`
